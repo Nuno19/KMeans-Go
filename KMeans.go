@@ -2,13 +2,9 @@ package kmeans
 
 import (
 	"fmt"
-	"log"
 	"math"
 	"math/rand"
 	"sync"
-
-	"gonum.org/v1/plot"
-	"gonum.org/v1/plot/vg"
 )
 
 //KMeans - Struct for KMeans Algorithm
@@ -251,20 +247,4 @@ func (kmeans *KMeans) GetPointIdxOfCentroid(centroidIdx int) []int {
 		}
 	}
 	return idxs
-}
-
-func (kmeans *KMeans) saveImage(size vg.Length, fileName string) {
-	p, err := plot.New()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for i, point := range kmeans.Centroids {
-		addScatters(p, i, "", convertPointToPlotterXY(point), true)
-	}
-	for i, point := range kmeans.Points {
-		addScatters(p, kmeans.Labels[i], "", convertPointToPlotterXY(point), false)
-	}
-
-	p.Save(size*vg.Centimeter, size*vg.Centimeter, fileName)
 }
