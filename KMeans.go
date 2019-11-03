@@ -14,15 +14,15 @@ import (
 //KMeans - Struct for KMeans Algorithm
 type KMeans struct {
 	//number of clusters
-	k int
+	K int
 	//max number of iterations
-	maxIter int
+	MaxIter int
 	//centroids of the clustering
-	centroids []Point
+	Centroids []Point
 	//points for clustering
-	points []Point
+	Points []Point
 	//labels of the corresponding point
-	labels []int
+	Labels []int
 }
 
 //InitCentroids - Inits the Centroids for random
