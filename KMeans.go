@@ -2,13 +2,9 @@ package kmeans
 
 import (
 	"fmt"
-	"log"
 	"math"
 	"math/rand"
 	"sync"
-
-	"gonum.org/v1/plot"
-	"gonum.org/v1/plot/vg"
 )
 
 type Point []float64
@@ -222,22 +218,6 @@ func (kmeans *KMeans) addPointList(points []Point) {
 	} else {
 		fmt.Printf("Centroids Not Found!\n")
 	}
-}
-
-func (kmeans *KMeans) saveImage(size vg.Length, fileName string) {
-	p, err := plot.New()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for i, point := range kmeans.centroids {
-		addScatters(p, i, "", convertPointToPlotterXY(point), true)
-	}
-	for i, point := range kmeans.points {
-		addScatters(p, kmeans.labels[i], "", convertPointToPlotterXY(point), false)
-	}
-
-	p.Save(size*vg.Centimeter, size*vg.Centimeter, fileName)
 }
 func (kmeans *KMeans) pointsToString() string {
 	var toReturn string
