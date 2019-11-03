@@ -47,7 +47,7 @@ func (kmeans *KMeans) ComputeSSE() float64 {
 		go func(i int) {
 			for j, point := range kmeans.points {
 				if kmeans.labels[j] == i {
-					distances[i] += point.subtract(kmeans.centroids[i]).norm()
+					distances[i] += point.Subtract(kmeans.centroids[i]).Norm()
 				}
 			}
 			defer wg1.Done()
@@ -72,7 +72,7 @@ func (kmeans *KMeans) ComputeLabels() []int {
 			min := math.MaxFloat64
 			minIdx := -1
 			for j, cent := range kmeans.centroids {
-				distance := kmeans.points[i].pointDist(cent)
+				distance := kmeans.points[i].PointDist(cent)
 				if distance < min {
 					min = distance
 					minIdx = j

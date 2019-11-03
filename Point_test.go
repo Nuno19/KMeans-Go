@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestPoint_print(t *testing.T) {
+func TestPoint_Print(t *testing.T) {
 	tests := []struct {
 		name  string
 		point Point
@@ -14,12 +14,12 @@ func TestPoint_print(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.point.print()
+			tt.point.Print()
 		})
 	}
 }
 
-func TestPoint_pointDist(t *testing.T) {
+func TestPoint_PointDist(t *testing.T) {
 	type args struct {
 		p2 Point
 	}
@@ -33,14 +33,14 @@ func TestPoint_pointDist(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.point.pointDist(tt.args.p2); got != tt.want {
-				t.Errorf("Point.pointDist() = %v, want %v", got, tt.want)
+			if got := tt.point.PointDist(tt.args.p2); got != tt.want {
+				t.Errorf("Point.PointDist() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestPoint_pointEqual(t *testing.T) {
+func TestPoint_PointEqual(t *testing.T) {
 	type args struct {
 		p2 Point
 	}
@@ -54,14 +54,14 @@ func TestPoint_pointEqual(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.point.pointEqual(tt.args.p2); got != tt.want {
-				t.Errorf("Point.pointEqual() = %v, want %v", got, tt.want)
+			if got := tt.point.PointEqual(tt.args.p2); got != tt.want {
+				t.Errorf("Point.PointEqual() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestPoint_subtract(t *testing.T) {
+func TestPoint_Subtract(t *testing.T) {
 	type args struct {
 		p2 Point
 	}
@@ -75,14 +75,14 @@ func TestPoint_subtract(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.point.subtract(tt.args.p2); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Point.subtract() = %v, want %v", got, tt.want)
+			if got := tt.point.Subtract(tt.args.p2); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Point.Subtract() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestPoint_norm(t *testing.T) {
+func TestPoint_Norm(t *testing.T) {
 	tests := []struct {
 		name  string
 		point Point
@@ -92,8 +92,8 @@ func TestPoint_norm(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.point.norm(); got != tt.want {
-				t.Errorf("Point.norm() = %v, want %v", got, tt.want)
+			if got := tt.point.Norm(); got != tt.want {
+				t.Errorf("Point.Norm() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -7,7 +7,7 @@ import (
 	"gonum.org/v1/plot/vg"
 )
 
-func TestKMeans_initCentroids(t *testing.T) {
+func TestKMeans_InitCentroids(t *testing.T) {
 	tests := []struct {
 		name   string
 		kmeans *KMeans
@@ -17,14 +17,14 @@ func TestKMeans_initCentroids(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.kmeans.initCentroids(); got != tt.want {
-				t.Errorf("KMeans.initCentroids() = %v, want %v", got, tt.want)
+			if got := tt.kmeans.InitCentroids(); got != tt.want {
+				t.Errorf("KMeans.InitCentroids() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestKMeans_computeSSE(t *testing.T) {
+func TestKMeans_ComputeSSE(t *testing.T) {
 	tests := []struct {
 		name   string
 		kmeans *KMeans
@@ -34,14 +34,14 @@ func TestKMeans_computeSSE(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.kmeans.computeSSE(); got != tt.want {
-				t.Errorf("KMeans.computeSSE() = %v, want %v", got, tt.want)
+			if got := tt.kmeans.ComputeSSE(); got != tt.want {
+				t.Errorf("KMeans.ComputeSSE() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestKMeans_computeLabels(t *testing.T) {
+func TestKMeans_ComputeLabels(t *testing.T) {
 	tests := []struct {
 		name   string
 		kmeans *KMeans
@@ -51,14 +51,14 @@ func TestKMeans_computeLabels(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.kmeans.computeLabels(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("KMeans.computeLabels() = %v, want %v", got, tt.want)
+			if got := tt.kmeans.ComputeLabels(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("KMeans.ComputeLabels() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_computeCentroids(t *testing.T) {
+func TestComputeCentroids(t *testing.T) {
 	type args struct {
 		pointList []Point
 		distIndex []int
@@ -73,8 +73,8 @@ func Test_computeCentroids(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := computeCentroids(tt.args.pointList, tt.args.distIndex, tt.args.k); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("computeCentroids() = %v, want %v", got, tt.want)
+			if got := ComputeCentroids(tt.args.pointList, tt.args.distIndex, tt.args.k); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ComputeCentroids() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -97,7 +97,7 @@ func TestKMeans_update(t *testing.T) {
 	}
 }
 
-func TestKMeans_fit(t *testing.T) {
+func TestKMeans_Fit(t *testing.T) {
 	type args struct {
 		pointList []Point
 	}
@@ -111,14 +111,14 @@ func TestKMeans_fit(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.kmeans.fit(tt.args.pointList); got != tt.want {
-				t.Errorf("KMeans.fit() = %v, want %v", got, tt.want)
+			if got := tt.kmeans.Fit(tt.args.pointList); got != tt.want {
+				t.Errorf("KMeans.Fit() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestKMeans_addPoint(t *testing.T) {
+func TestKMeans_AddPoint(t *testing.T) {
 	type args struct {
 		point Point
 	}
@@ -131,12 +131,12 @@ func TestKMeans_addPoint(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.kmeans.addPoint(tt.args.point)
+			tt.kmeans.AddPoint(tt.args.point)
 		})
 	}
 }
 
-func TestKMeans_addPointList(t *testing.T) {
+func TestKMeans_AddPointList(t *testing.T) {
 	type args struct {
 		points []Point
 	}
@@ -149,12 +149,12 @@ func TestKMeans_addPointList(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.kmeans.addPointList(tt.args.points)
+			tt.kmeans.AddPointList(tt.args.points)
 		})
 	}
 }
 
-func TestKMeans_pointsToString(t *testing.T) {
+func TestKMeans_PointsToString(t *testing.T) {
 	tests := []struct {
 		name   string
 		kmeans *KMeans
@@ -164,14 +164,14 @@ func TestKMeans_pointsToString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.kmeans.pointsToString(); got != tt.want {
-				t.Errorf("KMeans.pointsToString() = %v, want %v", got, tt.want)
+			if got := tt.kmeans.PointsToString(); got != tt.want {
+				t.Errorf("KMeans.PointsToString() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestKMeans_centroidsToString(t *testing.T) {
+func TestKMeans_CentroidsToString(t *testing.T) {
 	tests := []struct {
 		name   string
 		kmeans *KMeans
@@ -181,14 +181,14 @@ func TestKMeans_centroidsToString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.kmeans.centroidsToString(); got != tt.want {
-				t.Errorf("KMeans.centroidsToString() = %v, want %v", got, tt.want)
+			if got := tt.kmeans.CentroidsToString(); got != tt.want {
+				t.Errorf("KMeans.CentroidsToString() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestKMeans_labelsToString(t *testing.T) {
+func TestKMeans_LabelsToString(t *testing.T) {
 	tests := []struct {
 		name   string
 		kmeans *KMeans
@@ -198,14 +198,14 @@ func TestKMeans_labelsToString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.kmeans.labelsToString(); got != tt.want {
-				t.Errorf("KMeans.labelsToString() = %v, want %v", got, tt.want)
+			if got := tt.kmeans.LabelsToString(); got != tt.want {
+				t.Errorf("KMeans.LabelsToString() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestKMeans_labelCount(t *testing.T) {
+func TestKMeans_LabelCount(t *testing.T) {
 	tests := []struct {
 		name   string
 		kmeans *KMeans
@@ -215,14 +215,14 @@ func TestKMeans_labelCount(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.kmeans.labelCount(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("KMeans.labelCount() = %v, want %v", got, tt.want)
+			if got := tt.kmeans.LabelCount(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("KMeans.LabelCount() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_labelCount(t *testing.T) {
+func TestLabelCount(t *testing.T) {
 	type args struct {
 		labels []int
 		k      int
@@ -236,14 +236,14 @@ func Test_labelCount(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := labelCount(tt.args.labels, tt.args.k); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("labelCount() = %v, want %v", got, tt.want)
+			if got := LabelCount(tt.args.labels, tt.args.k); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("LabelCount() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestKMeans_getPointIdxOfCentroid(t *testing.T) {
+func TestKMeans_GetPointIdxOfCentroid(t *testing.T) {
 	type args struct {
 		centroidIdx int
 	}
@@ -257,8 +257,8 @@ func TestKMeans_getPointIdxOfCentroid(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.kmeans.getPointIdxOfCentroid(tt.args.centroidIdx); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("KMeans.getPointIdxOfCentroid() = %v, want %v", got, tt.want)
+			if got := tt.kmeans.GetPointIdxOfCentroid(tt.args.centroidIdx); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("KMeans.GetPointIdxOfCentroid() = %v, want %v", got, tt.want)
 			}
 		})
 	}
