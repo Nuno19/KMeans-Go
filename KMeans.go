@@ -11,16 +11,22 @@ import (
 	"gonum.org/v1/plot/vg"
 )
 
+//KMeans - Struct for KMeans Algorithm
 type KMeans struct {
-	k         int
-	maxIter   int
+	//number of clusters
+	k int
+	//max number of iterations
+	maxIter int
+	//centroids of the clustering
 	centroids []Point
-	points    []Point
-	labels    []int
-	distances [][]float64
+	//points for clustering
+	points []Point
+	//labels of the corresponding point
+	labels []int
 }
 
-func (kmeans *KMeans) initCentroids() bool {
+//InitCentroids - Inits the Centroids for random
+func (kmeans *KMeans) InitCentroids() bool {
 	if len(kmeans.points) <= kmeans.k {
 		return false
 	}
@@ -32,7 +38,8 @@ func (kmeans *KMeans) initCentroids() bool {
 	return true
 }
 
-func (kmeans *KMeans) computeSSE() float64 {
+//ComputeSSE - computes Sum of Squared Erros
+func (kmeans *KMeans) ComputeSSE() float64 {
 	var wg1 sync.WaitGroup
 	wg1.Add(len(kmeans.centroids))
 	distances := make(Point, len(kmeans.centroids))
@@ -54,7 +61,8 @@ func (kmeans *KMeans) computeSSE() float64 {
 	return distance
 }
 
-func (kmeans *KMeans) computeLabels() []int {
+//ComputeLabels - Computes labels of the points
+func (kmeans *KMeans) ComputeLabels() []int {
 	var labels = make([]int, len(kmeans.points))
 	var wg1 sync.WaitGroup
 	wg1.Add(len(kmeans.points))
@@ -79,7 +87,8 @@ func (kmeans *KMeans) computeLabels() []int {
 	return labels
 }
 
-func computeCentroids(pointList []Point, distIndex []int, k int) []Point {
+//ComputeCentroids - Recalculates centroids position
+func ComputeCentroids(pointList []Point, distIndex []int, k int) []Point {
 	clusters := make([][]Point, k)
 	for i, point := range distIndex {
 		clusters[point] = append(clusters[point], pointList[i])
@@ -100,14 +109,13 @@ func computeCentroids(pointList []Point, distIndex []int, k int) []Point {
 	}
 	return centroids
 }
-
 func (kmeans *KMeans) update() bool {
 	oldCentroids := make([]Point, len(kmeans.centroids))
 	for i := 0; i < kmeans.maxIter; i++ {
 		oldCentroids = kmeans.centroids
-		kmeans.labels = kmeans.computeLabels()
+		kmeans.labels = kmeans.ComputeLabels()
 
-		kmeans.centroids = computeCentroids(kmeans.points, kmeans.labels, kmeans.k)
+		kmeans.centroids = ComputeCentroids(kmeans.points, kmeans.labels, kmeans.k)
 
 		if equals(kmeans.centroids, oldCentroids) {
 
@@ -118,14 +126,15 @@ func (kmeans *KMeans) update() bool {
 	return false
 }
 
-func (kmeans *KMeans) fit(pointList []Point) bool {
+//Fit - Fits the points into k centroids
+func (kmeans *KMeans) Fit(pointList []Point) bool {
 	if kmeans.k == 0 {
 		fmt.Printf("K not defined")
 		return false
 	}
 
 	kmeans.points = pointList
-	init := kmeans.initCentroids()
+	init := kmeans.InitCentroids()
 	if !init {
 		return false
 	}
@@ -137,7 +146,8 @@ func (kmeans *KMeans) fit(pointList []Point) bool {
 
 }
 
-func (kmeans *KMeans) addPoint(point Point) {
+//AddPoint - Add a new Point to the list and recalculate centroids
+func (kmeans *KMeans) AddPoint(point Point) {
 	kmeans.points = append(kmeans.points, point)
 	found := kmeans.update()
 	if found {
@@ -147,7 +157,8 @@ func (kmeans *KMeans) addPoint(point Point) {
 	}
 }
 
-func (kmeans *KMeans) addPointList(points []Point) {
+//AddPointList - Add a list of Points to the list and recalculate centroids
+func (kmeans *KMeans) AddPointList(points []Point) {
 	for _, p := range points {
 		kmeans.points = append(kmeans.points, p)
 	}
@@ -158,7 +169,9 @@ func (kmeans *KMeans) addPointList(points []Point) {
 		fmt.Printf("Centroids Not Found!\n")
 	}
 }
-func (kmeans *KMeans) pointsToString() string {
+
+//PointsToString - Returns the String of the Points
+func (kmeans *KMeans) PointsToString() string {
 	var toReturn string
 
 	for i, point := range kmeans.points {
@@ -176,7 +189,8 @@ func (kmeans *KMeans) pointsToString() string {
 	return toReturn
 }
 
-func (kmeans *KMeans) centroidsToString() string {
+//CentroidsToString - returns the string of centroids
+func (kmeans *KMeans) CentroidsToString() string {
 	var toReturn string
 
 	for i, cent := range kmeans.centroids {
@@ -194,7 +208,8 @@ func (kmeans *KMeans) centroidsToString() string {
 	return toReturn
 }
 
-func (kmeans *KMeans) labelsToString() string {
+//LabelsToString - Returns the string of Labels
+func (kmeans *KMeans) LabelsToString() string {
 	var toReturn string
 
 	for i, label := range kmeans.labels {
@@ -208,7 +223,8 @@ func (kmeans *KMeans) labelsToString() string {
 	return toReturn
 }
 
-func (kmeans *KMeans) labelCount() []int {
+//LabelCount - Returns the number of points per centroid
+func (kmeans *KMeans) LabelCount() []int {
 	count := make([]int, len(kmeans.centroids))
 	for _, label := range kmeans.labels {
 		count[label]++
@@ -216,7 +232,8 @@ func (kmeans *KMeans) labelCount() []int {
 	return count
 }
 
-func labelCount(labels []int, k int) []int {
+//LabelCount - Returns the number of points per centroid
+func LabelCount(labels []int, k int) []int {
 	count := make([]int, k)
 	for _, label := range labels {
 		count[label]++
@@ -224,7 +241,8 @@ func labelCount(labels []int, k int) []int {
 	return count
 }
 
-func (kmeans *KMeans) getPointIdxOfCentroid(centroidIdx int) []int {
+//GetPointIdxOfCentroid - return indexes of points of a certain centroid
+func (kmeans *KMeans) GetPointIdxOfCentroid(centroidIdx int) []int {
 	var idxs []int
 
 	for i, label := range kmeans.labels {

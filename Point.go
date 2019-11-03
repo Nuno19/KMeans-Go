@@ -5,9 +5,11 @@ import (
 	"math"
 )
 
+//Point - Slice of Float64 Values
 type Point []float64
 
-func (point Point) print() {
+//Print - Prints the point vaues
+func (point Point) Print() {
 
 	for i, num := range point {
 
@@ -20,7 +22,8 @@ func (point Point) print() {
 	fmt.Printf("\n")
 }
 
-func (point Point) pointDist(p2 Point) float64 {
+//PointDist - returns the distance between to Points
+func (point Point) PointDist(p2 Point) float64 {
 	var sum float64
 	for i := 0; i < len(point); i++ {
 		if point[i] == p2[i] {
@@ -31,7 +34,8 @@ func (point Point) pointDist(p2 Point) float64 {
 	return math.Sqrt(sum)
 }
 
-func (point Point) pointEqual(p2 Point) bool {
+//PointEqual - Checks if a point is equal to another
+func (point Point) PointEqual(p2 Point) bool {
 	if len(point) != len(p2) {
 		return false
 	}
@@ -43,14 +47,16 @@ func (point Point) pointEqual(p2 Point) bool {
 	return true
 }
 
-func (point Point) subtract(p2 Point) Point {
+//Subtract - returns the value by value subtraction of two points
+func (point Point) Subtract(p2 Point) Point {
 	for i := range point {
 		point[i] -= p2[i]
 	}
 	return point
 }
 
-func (point Point) norm() float64 {
+//Norm - returns the point norm
+func (point Point) Norm() float64 {
 	norm := 0.0
 	for _, p := range point {
 		norm += math.Pow(p, 2)
@@ -58,12 +64,13 @@ func (point Point) norm() float64 {
 	return math.Sqrt(norm)
 }
 
+//Equals - Checks if two list of points are the same
 func equals(points1 []Point, points2 []Point) bool {
 	if len(points1) != len(points2) {
 		return false
 	}
 	for i := range points1 {
-		if !points1[i].pointEqual(points2[i]) {
+		if !points1[i].PointEqual(points2[i]) {
 			return false
 		}
 	}
