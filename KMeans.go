@@ -19,6 +19,7 @@ type KMeans struct {
 	centroids []Point
 	points    []Point
 	labels    []int
+	distances [][]float64
 }
 
 func (point Point) print() {
@@ -37,6 +38,9 @@ func (point Point) print() {
 func (point Point) pointDist(p2 Point) float64 {
 	var sum float64
 	for i := 0; i < len(point); i++ {
+		if point[i] == p2[i] {
+			continue
+		}
 		sum += math.Pow(point[i]-p2[i], 2.0)
 	}
 	return math.Sqrt(sum)
@@ -54,41 +58,72 @@ func (point Point) pointEqual(p2 Point) bool {
 	return true
 }
 
-func pointDist(p1 Point, p2 Point) {
-	var sum float64
-	for i := 0; i < len(p1); i++ {
-		sum += math.Pow(p1[i]-p2[i], 2.0)
+func (point Point) subtract(p2 Point) Point {
+	for i := range point {
+		point[i] -= p2[i]
 	}
-
+	return point
 }
 
-func (kmeans *KMeans) initCentroids() {
+func (point Point) norm() float64 {
+	norm := 0.0
+	for _, p := range point {
+		norm += math.Pow(p, 2)
+	}
+	return math.Sqrt(norm)
+}
+
+func (kmeans *KMeans) initCentroids() bool {
+	if len(kmeans.points) <= kmeans.k {
+		return false
+	}
 	kmeans.centroids = make([]Point, kmeans.k)
 	var perm = rand.Perm(len(kmeans.points))
 	for i := 0; i < kmeans.k; i++ {
 		kmeans.centroids[i] = kmeans.points[perm[i]]
 	}
+	return true
 }
 
-func computeLabels(pointList []Point, centroids []Point) []int {
-	var labels = make([]int, len(pointList))
-
+func (kmeans *KMeans) computeSSE() float64 {
 	var wg1 sync.WaitGroup
-	wg1.Add(len(pointList))
-
-	for i := range pointList {
+	wg1.Add(len(kmeans.centroids))
+	distances := make(Point, len(kmeans.centroids))
+	for i := range kmeans.centroids {
 		go func(i int) {
-			//distances = make([]float64, len(centroids))
+			for j, point := range kmeans.points {
+				if kmeans.labels[j] == i {
+					distances[i] += point.subtract(kmeans.centroids[i]).norm()
+				}
+			}
+			defer wg1.Done()
+		}(i)
+	}
+	wg1.Wait()
+	distance := 0.0
+	for _, dist := range distances {
+		distance += math.Pow(dist, 2)
+	}
+	return distance
+}
+
+func (kmeans *KMeans) computeLabels() []int {
+	var labels = make([]int, len(kmeans.points))
+	var wg1 sync.WaitGroup
+	wg1.Add(len(kmeans.points))
+
+	for i := range kmeans.points {
+		go func(i int) {
 			min := math.MaxFloat64
 			minIdx := -1
-			for j, cent := range centroids {
-
-				distance := pointList[i].pointDist(cent)
+			for j, cent := range kmeans.centroids {
+				distance := kmeans.points[i].pointDist(cent)
 				if distance < min {
 					min = distance
 					minIdx = j
 				}
 			}
+
 			labels[i] = minIdx
 			defer wg1.Done()
 		}(i)
@@ -122,14 +157,11 @@ func computeCentroids(pointList []Point, distIndex []int, k int) []Point {
 func (kmeans *KMeans) update() bool {
 	oldCentroids := make([]Point, len(kmeans.centroids))
 	for i := 0; i < kmeans.maxIter; i++ {
-		//start := time.Now().UnixNano()
 		oldCentroids = kmeans.centroids
-		kmeans.labels = computeLabels(kmeans.points, kmeans.centroids)
+		kmeans.labels = kmeans.computeLabels()
 
 		kmeans.centroids = computeCentroids(kmeans.points, kmeans.labels, kmeans.k)
-		//fmt.Printf("IDX: %d |", i)
-		//fmt.Printf("%f\n", float64((end-start))/1000000000)
-		//end := time.Now().UnixNano()
+
 		if equals(kmeans.centroids, oldCentroids) {
 
 			return true
@@ -151,21 +183,23 @@ func equals(points1 []Point, points2 []Point) bool {
 	return true
 }
 
-func (kmeans *KMeans) fit(pointList []Point) {
+func (kmeans *KMeans) fit(pointList []Point) bool {
 	if kmeans.k == 0 {
 		fmt.Printf("K not defined")
-		return
+		return false
 	}
 
 	kmeans.points = pointList
-	kmeans.initCentroids()
-
+	init := kmeans.initCentroids()
+	if !init {
+		return false
+	}
 	found := kmeans.update()
 	if found {
-		fmt.Printf("Centroids Found!\n")
-	} else {
-		fmt.Printf("Centroids Not Found!\n")
+		return true
 	}
+	return false
+
 }
 
 func (kmeans *KMeans) addPoint(point Point) {
@@ -254,12 +288,6 @@ func (kmeans *KMeans) labelsToString() string {
 	}
 	return toReturn
 }
-func printList(list []int) {
-	for _, el := range list {
-		fmt.Printf("%d,", el)
-	}
-	fmt.Println()
-}
 
 func (kmeans *KMeans) labelCount() []int {
 	count := make([]int, len(kmeans.centroids))
@@ -269,33 +297,21 @@ func (kmeans *KMeans) labelCount() []int {
 	return count
 }
 
-func Hello() string {
-	return "Hello, world."
-}
-
-/*
-func main() {
-
-	maxIter := 200
-	k := 50
-	dataSize := 1000
-
-	rand.Seed(time.Now().Unix())
-
-	pointArr := make([]Point, dataSize)
-
-	for i := 0; i < len(pointArr); i++ {
-		pointArr[i] = Point{rand.Float64(), rand.Float64(), rand.Float64(), rand.Float64()}
-		//pointArr[i].print()
+func labelCount(labels []int, k int) []int {
+	count := make([]int, k)
+	for _, label := range labels {
+		count[label]++
 	}
-	fmt.Println(len(pointArr[0]))
-	kmeans := KMeans{k: k, maxIter: maxIter}
-	start := time.Now().UnixNano()
-	kmeans.fit(pointArr)
-	end := time.Now().UnixNano()
-	fmt.Printf("%f\n", float64((end-start))/1000000000)
-	fmt.Println("COUNTS: ")
-	kmeans.saveImage(8, "file.pdf")
-	printList(kmeans.labelCount())
+	return count
 }
-*/
+
+func (kmeans *KMeans) getPointIdxOfCentroid(centroidIdx int) []int {
+	var idxs []int
+
+	for i, label := range kmeans.labels {
+		if label == centroidIdx {
+			idxs = append(idxs, i)
+		}
+	}
+	return idxs
+}
