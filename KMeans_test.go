@@ -3,6 +3,8 @@ package kmeans
 import (
 	"reflect"
 	"testing"
+
+	"gonum.org/v1/plot/vg"
 )
 
 func TestPoint_print(t *testing.T) {
@@ -373,6 +375,25 @@ func TestKMeans_getPointIdxOfCentroid(t *testing.T) {
 			if got := tt.kmeans.getPointIdxOfCentroid(tt.args.centroidIdx); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("KMeans.getPointIdxOfCentroid() = %v, want %v", got, tt.want)
 			}
+		})
+	}
+}
+
+func TestKMeans_saveImage(t *testing.T) {
+	type args struct {
+		size     vg.Length
+		fileName string
+	}
+	tests := []struct {
+		name   string
+		kmeans *KMeans
+		args   args
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.kmeans.saveImage(tt.args.size, tt.args.fileName)
 		})
 	}
 }
