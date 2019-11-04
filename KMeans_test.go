@@ -261,3 +261,24 @@ func TestKMeans_GetPointIdxOfCentroid(t *testing.T) {
 		})
 	}
 }
+
+func TestKMeans_ComputeClosestCentroidIdx(t *testing.T) {
+	type args struct {
+		point Point
+	}
+	tests := []struct {
+		name   string
+		kmeans *KMeans
+		args   args
+		want   int
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.kmeans.ComputeClosestCentroidIdx(tt.args.point); got != tt.want {
+				t.Errorf("KMeans.ComputeClosestCentroidIdx() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

@@ -57,6 +57,21 @@ func (kmeans *KMeans) ComputeSSE() float64 {
 	return distance
 }
 
+//ComputeClosestCentroidIdx - returns the index of the closest centroid for that point
+func (kmeans *KMeans) ComputeClosestCentroidIdx(point Point) int {
+
+	min := math.MaxFloat64
+	minIdx := -1
+	for i, cent := range kmeans.Centroids {
+		distance := point.PointDist(cent)
+		if distance < min {
+			min = distance
+			minIdx = i
+		}
+	}
+	return minIdx
+}
+
 //ComputeLabels - Computes Labels of the Points
 func (kmeans *KMeans) ComputeLabels() []int {
 	var Labels = make([]int, len(kmeans.Points))
