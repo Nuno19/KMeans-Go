@@ -26,6 +26,10 @@ func (point Point) Print() {
 func (point Point) PointDist(p2 Point) float64 {
 	var sum float64
 	for i := 0; i < len(point); i++ {
+		if i >= len(p2) {
+			sum += math.Pow(point[i], 2.0)
+			continue
+		}
 		if point[i] == p2[i] {
 			continue
 		}
